@@ -23,6 +23,7 @@ tenacity = "^8.2.0"
 [tool.poetry.group.dev.dependencies]
 python-dotenv = "^0.21.1"
 pytest = "^7.2.1"
+pytest-watch = "^4.2.0"
 
 
 [tool.poetry.group.lint.dependencies]

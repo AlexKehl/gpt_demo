@@ -1,3 +1,4 @@
+from pathlib import Path
 import streamlit as st
 from openai.error import OpenAIError
 
@@ -19,21 +20,20 @@ def clear_submit():
     st.session_state["submit"] = False
 
 
-st.set_page_config(page_title="KnowledgeGPT", page_icon="📖", layout="wide")
-st.header("📖KnowledgeGPT")
+st.set_page_config(page_title="Demo", layout="wide")
 
 sidebar()
 
 uploaded_file = st.file_uploader(
-    "Upload a pdf, docx, or txt file",
-    type=["pdf", "docx", "txt"],
-    help="Scanned documents are not supported yet!",
+    "Upload a pdf",
+    type=["pdf"],
     on_change=clear_submit,
+    # accept_multiple_files=True,
 )
 
 index = None
 doc = None
-if uploaded_file is not None:
+if uploaded_file:
     if uploaded_file.name.endswith(".pdf"):
         doc = parse_pdf(uploaded_file)
     elif uploaded_file.name.endswith(".docx"):
@@ -42,10 +42,10 @@ if uploaded_file is not None:
         doc = parse_txt(uploaded_file)
     else:
         raise ValueError("File type not supported!")
-    text = text_to_docs(doc)
+    docs = text_to_docs(doc)
     try:
         with st.spinner("Indexing document... This may take a while⏳"):
-            index = embed_docs(text)
+            index = embed_docs(docs)
         st.session_state["api_key_configured"] = True
     except OpenAIError as e:
         st.error(e._message)
